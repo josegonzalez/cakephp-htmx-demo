@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "f25a12117b9a92ab3357eb567d876b68",
+    "content-hash": "acb9571279f2d5db29d85bf92c486404",
     "packages": [
         {
             "name": "cakephp/cakephp",
@@ -2019,6 +2019,44 @@
                 }
             ],
             "time": "2024-06-28T09:27:18+00:00"
+        },
+        {
+            "name": "zunnu/cake-htmx",
+            "version": "1.0.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/zunnu/cake-htmx.git",
+                "reference": "6aff839d51b718806c16c455d5d52f531d57fb76"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/zunnu/cake-htmx/zipball/6aff839d51b718806c16c455d5d52f531d57fb76",
+                "reference": "6aff839d51b718806c16c455d5d52f531d57fb76",
+                "shasum": ""
+            },
+            "require": {
+                "cakephp/cakephp": "^5.0.1",
+                "php": ">=8.1"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "^10.1"
+            },
+            "type": "cakephp-plugin",
+            "autoload": {
+                "psr-4": {
+                    "CakeHtmx\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "description": "Htmx plugin for CakePHP",
+            "support": {
+                "issues": "https://github.com/zunnu/cake-htmx/issues",
+                "source": "https://github.com/zunnu/cake-htmx/tree/1.0.1"
+            },
+            "time": "2024-07-22T16:44:34+00:00"
         }
     ],
     "packages-dev": [
