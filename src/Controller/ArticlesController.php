@@ -33,6 +33,29 @@ class ArticlesController extends AppController
         }
     }
 
+    public function search()
+    {
+        $this->viewBuilder()->setLayout('old_default');
+        $query = $this->Articles->find();
+        $q = $this->request->getQuery('q');
+        if (!empty($q)) {
+            $query = $query->where([
+                'title LIKE' => '%' . $q . '%',
+            ]);
+        }
+        $articles = $this->paginate($query);
+
+        $this->set(compact('articles'));
+        if ($this->request->is('htmx')) {
+            $this->viewBuilder()->disableAutoLayout();
+            $this->viewBuilder()->setTemplatePath('element');
+
+            $elements = $this->request->getHeader('Cake-Element');
+            $element = count($elements) > 0 ? $elements[0] : 'search';
+            $this->viewBuilder()->setTemplate('htmx/articles/' . $element);
+        }
+    }
+
     public function htmxIndex()
     {
         $query = $this->Articles->find();

@@ -214,3 +214,102 @@ $this->viewBuilder()->setTemplate('htmx/articles/index');
 ```
 
 This method would allow us to bypass the rest of the original template, which can be helpful in cases where we have more complex templates. The nice thing about this is that we can now reuse that element in other places, or if our controller logic has a of unrelated logic, use a separate action altogether that _only_ renders the htmx code.
+
+---
+
+One common feature folks build into their applications is search. Typically you're searching a database, filtering results and returning relevant results to users. We'll start by updating the default index page to add search.
+
+Since I am building on the existing demo codebase, I'll use the name `search` for my action. I'll add the following function there.
+
+```php
+public function search()
+{
+    $query = $this->Articles->find();
+    $articles = $this->paginate($query);
+
+    $this->set(compact('articles'));
+}
+```
+
+The default index page just paginates, but we want to involve some form of search. I could create a custom finder, but for now, I’ll modify the query object directly to do the query.
+
+```php
+$query = $this->Articles->find();
+$q = $this->request->getQuery('q');
+if (!empty($q)) {
+    $query = $query->where([
+        'title LIKE' => '%' . $q . '%',
+    ]);
+}
+$articles = $this->paginate($query);
+```
+
+I’m also going to set the layout to the old, default layout. This is purely a cosmetic change. The only addition I have to it is including the htmx library.
+
+```php
+$this->viewBuilder()->setLayout('old_default');
+```
+
+Finally, I use the detector to toggle the htmx request, disable the layout, and use an element for the template.
+
+```php
+if ($this->request->is('htmx')) {
+    $this->viewBuilder()->disableAutoLayout();
+    $this->viewBuilder()->setTemplatePath('element');
+
+    $elements = $this->request->getHeader('Cake-Element');
+    $element = count($elements) > 0 ? $elements[0] : 'search';
+    $this->viewBuilder()->setTemplate('htmx/articles/' . $element);
+}
+```
+
+A difference here from our previous method is that I’m respecting the Cake-Element header for selecting the template. HTMX allows users to add extra headers to their requests, and we’re abusing that to decide what to display for the user. You could add any headers you want to the request being made.
+
+One possible improvement would be to automatically disable the layout and set the template path in the `AppController::initialize()` function. This assumes you always want to support htmx in this sort of way.
+
+To skip a bunch of work, I’ll be baking the search action and then customizing it. For our demo, I’ll use the `articles#index` action, but of course If you have another pre-existing template, feel free to modify that.
+
+```shell
+bin/cake bake template articles index search
+```
+
+I'll add a search input control to the top of the page. In the previous demo, we used a trigger that occured when the element was `revealed`. In this case, we want to only trigger a search on `keyup`, when the input was changed, with a delay of 500 milliseconds. This will make the page a bit more responsive, as otherwise we'll trigger search requests constantly.
+
+Additionally, I've added custom headers with the `hx-headers` property. This takes a json object, and injects any specified headers on the request. To expand on the element selection approach, if your page has a few different htmx-related actions that can be performed, you _could_ abuse this as a way to key into different code paths in your action. The alternative of course is to use different actions completely, but the path you choose is up to you.
+
+We also want to update the url bar to include the query via the `hx-replace-url` trigger. This provides users of our application the ability to save search requests so they can share them. You could also use `hx-push-url` to construct a new history entry in the browser history if thats desirable.
+
+```php
+<?= $this->Form->control('q', [
+    'label' => false,
+    'placeholder' => 'Search...',
+    'hx-get' => $this->Url->build(['action' => 'search']),
+    'hx-target' => 'tbody',
+    'hx-trigger' => 'keyup changed delay:500ms',
+    'hx-headers' => json_encode(['Cake-Element' => 'search']),
+    'hx-replace-url' => 'true',
+]) ?>
+```
+
+Similar to our previous version, I'll use an element to store the actual code I want to render for the htmx request.
+
+```php
+<?= $this->element('htmx/articles/search') ?>
+```
+
+```php
+<?php foreach ($articles as $article) : ?>
+    <tr>
+        <td><?= $this->Number->format($article->id) ?></td>
+        <td><?= h($article->title) ?></td>
+        <td><?= h($article->photo_url) ?></td>
+        <td class="actions">
+            <?= $this->Html->link(__('View'), ['action' => 'view', $article->id]) ?>
+            <?= $this->Html->link(__('Edit'), ['action' => 'edit', $article->id]) ?>
+            <?= $this->Form->postLink(__('Delete'), ['action' => 'delete', $article->id], ['confirm' => __('Are you sure you want to delete # {0}?', $article->id)]) ?>
+        </td>
+    </tr>
+<?php endforeach; ?>
+```
+
+We could have also used a View Block or avoided both by using the `hx-select`  attribute to only include certain elements in our swap and performing the logic entirely on the client-side. I recommend weighing the complexity of each method as you use HTMX, but generally standardizing on one in order to make it easy to work across your codebase.
