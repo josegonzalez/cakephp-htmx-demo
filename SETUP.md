@@ -111,3 +111,54 @@ if ($this->request->getHeaderLine('HX-Request') === "true") {
 
 The above could also be added to `AppController::initialize()` if you'd like it to apply everywhere.
 
+---
+
+How does this change with the `cake-htmx` plugin?
+
+First, lets install and load the plugin:
+
+```shell
+composer require zunnu/cake-htmx
+bin/cake plugin load CakeHtmx
+```
+
+This plugin provides a component for the majority of user interactions with the plugin. We'll load that up in our `AppController:initialize()`:
+
+```php
+$this->loadComponent('CakeHtmx.Htmx');
+```
+
+As far as changes to the controller, rather than checking a a request header line, the plugin adds a request detector for htmx which we can use:
+
+```shell
+if ($this->getRequest()->is('htmx')) {
+    $this->viewBuilder()->disableAutoLayout();
+}
+```
+
+The other interesting thing here is that the plugin proposes using View Blocks for managing what gets displayed for various responses. I think this is pretty neat, though I'll show an alternative in a second. This will allow you to reuse content without needing to make major changes to your plugin. We'll start by specifying the block to show:
+
+```php
+$this->Htmx->setBlock("articles");
+```
+
+The `articles` block here corresponds with the `hx-target` we previously specified. If we know that the only items shown are the items within the `hx-target`, we could instead just respect the specified `hx-target`:
+
+```php
+$this->Htmx->setBlock($this->Htmx->getTarget());
+```
+
+Finally, we would wrap our previous foreach loop with view blocks:
+
+```php
+<?php $this->start('articles'); ?>
+<?php foreach ($articles as $i => $article) : ?>
+    <div class="article">
+    ...
+    </div>
+<?php endforeach; ?>
+<?php $this->end(); ?>
+<?= $this->fetch('articles'); ?>
+```
+
+Note that we need to print out the articles. And thats it, the demo is exactly the same.

@@ -32,4 +32,17 @@ class ArticlesController extends AppController
             $this->viewBuilder()->disableAutoLayout();
         }
     }
+
+    public function htmxIndex()
+    {
+        $query = $this->Articles->find();
+        $articles = $this->paginate($query);
+
+        $this->set(compact('articles'));
+
+        if ($this->getRequest()->is('htmx')) {
+            $this->viewBuilder()->disableAutoLayout();
+            $this->Htmx->setBlock($this->Htmx->getTarget());
+        }
+    }
 }
