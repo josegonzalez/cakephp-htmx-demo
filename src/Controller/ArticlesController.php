@@ -45,4 +45,18 @@ class ArticlesController extends AppController
             $this->Htmx->setBlock($this->Htmx->getTarget());
         }
     }
+
+    public function htmxIndexWithElement()
+    {
+        $query = $this->Articles->find();
+        $articles = $this->paginate($query);
+
+        $this->set(compact('articles'));
+
+        if ($this->getRequest()->is('htmx')) {
+            $this->viewBuilder()->disableAutoLayout();
+            $this->viewBuilder()->setTemplatePath('element');
+            $this->viewBuilder()->setTemplate('htmx/articles/index');
+        }
+    }
 }

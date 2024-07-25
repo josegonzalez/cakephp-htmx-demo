@@ -37,6 +37,12 @@ foreach (range(1, 100) as $i) {
 }
 ```
 
+And then run that seed:
+
+```shell
+bin/cake migrations seed
+```
+
 Now that we have some dummy data, lets generate some code. I'll start with the model:
 
 ```shell
@@ -162,3 +168,49 @@ Finally, we would wrap our previous foreach loop with view blocks:
 ```
 
 Note that we need to print out the articles. And thats it, the demo is exactly the same.
+
+---
+
+An alternative to viewblocks - which I think is a bit heavy-weight - would be to use elements for rendering the view. Lets start by separating out the guts of what we want to show into an element:
+
+```shell
+touch templates/element/htmx/articles/index.php
+```
+
+The contents of this file are the for-loop within the initial `index.php` template:
+
+```php
+<?php foreach ($articles as $i => $article) : ?>
+    <div class="article">
+        <h2><?= $article->title ?></h2>
+        <a class="image-container" href="<?= $article->photo_url ?>">
+            <img width="300" height="300" src="<?= $article->photo_url ?>" />
+        </a>
+
+        <p><?php $article->content ?></p>
+
+        <?php if ($this->Paginator->hasNext() && $i === count($articles) - 1) : ?>
+            <span hx-get="<?= $this->Paginator->generateUrl(['page' => $this->Paginator->current() + 1]) ?>" hx-swap="beforeend" hx-target="#articles" hx-select=".article" hx-trigger="revealed">
+            </span>
+        <?php endif ?>
+    </div>
+<?php endforeach; ?>
+```
+
+Our index file becomes the following:
+
+```php
+<h1>Articles</h1>
+<div id="articles">
+    <?= $this->element('htmx/articles/index') ?>
+</div>
+```
+
+And now we can change the template path and set the template to use to our new element instead of specifying a view block:
+
+```php
+$this->viewBuilder()->setTemplatePath('element');
+$this->viewBuilder()->setTemplate('htmx/articles/index');
+```
+
+This method would allow us to bypass the rest of the original template, which can be helpful in cases where we have more complex templates. The nice thing about this is that we can now reuse that element in other places, or if our controller logic has a of unrelated logic, use a separate action altogether that _only_ renders the htmx code.
