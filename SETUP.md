@@ -313,3 +313,112 @@ Similar to our previous version, I'll use an element to store the actual code I 
 ```
 
 We could have also used a View Block or avoided both by using the `hx-select`  attribute to only include certain elements in our swap and performing the logic entirely on the client-side. I recommend weighing the complexity of each method as you use HTMX, but generally standardizing on one in order to make it easy to work across your codebase.
+
+---
+
+A common use-case in an application is to run some long-running process and keep a user up to date on the status. Avoiding this in the browser is important, as we don't want timeouts to occur or tie the actual work to the remote user's browser not being closed. A common use-case is running said work in a queue, which we can the CakePHP Queue plugin for. Work would get processed on some message bus, and then status displayed back to users in some fashion.
+
+For this following demo, we won't be building a queue job, but we will be polling the CakePHP app for status of something. In fact, we'll be polling via HTMX - hurray - and showing off the results in the UI. We will be building the polling site I showed off for the raffle. To start, lets create our `RaffleController` via bake:
+
+```shell
+# make an empty controller
+bin/cake bake controller --no-actions raffle
+```
+
+Next, we'll add a simple index action. For our demo, we'll specify using the `old_default` layout, but otherwise it's empty.
+
+```php
+public function index()
+{
+    $this->viewBuilder()->setLayout('old_default');
+}
+```
+
+Our view for it is pretty straightforward. It's essentially a form:
+
+```php
+<div class="raffle view content">
+    <h3>Raffle Time</h3>
+    <?= $this->Form->create(null, [
+        'hx-post' => $this->Url->build(['action' => 'start_picker']),
+        'hx-target' => '.winner',
+        'hx-swap' => 'innerHTML',
+    ]) ?>
+    <fieldset>
+        <legend><?= __('Choose a minimum number') ?></legend>
+        <?= $this->Form->control('min', ['label' => false, 'placeholder' => 'Minimum number']) ?>
+        <legend><?= __('Choose a maximum number') ?></legend>
+        <?= $this->Form->control('max', ['label' => false, 'placeholder' => 'Maximum number']) ?>
+    </fieldset>
+    <?= $this->Form->button(__('Select a winner')) ?>
+    <?= $this->Form->end() ?>
+    <div class="winner">
+    </div>
+</div>
+```
+
+This form allows us to pick a minimum and maximum number to randomly choose from. It gets submitted as a POST request by specifying the url as `hx-post`. The response is written to the div with the `.winner` class on it. HTMX provides a variety of ways to swap the contents of the response with the target - we previously specified `beforeend`, but if left unspecified, the default is `innerHTML`.
+
+Other than not having a `url`, this form is more or less the same as any other form created by the `FormHelper`.
+
+Our `start_picker` action is also pretty straightforward. It essentially will respond with the html we need and nothing else. I'll disable the autolayout, though we could have also disabled it in our controller whenever we detect an `htmx` request.
+
+One other thing it will do is set the posted min/max values as values for the template.
+
+```php
+public function startPicker()
+{
+    $this->viewBuilder()->disableAutoLayout();
+    $this->set('min', $this->request->getData('min'));
+    $this->set('max', $this->request->getData('max'));
+}
+```
+
+In our template, we will use long-polling as a mechanism for checking for a raffle winner. Long-polling is a very old method of fetching results from a webserver. Alternatives that HTMX supports are Server Sent Events or Websockets. While we can build a CakePHP app that supports these, they aren't trivial to do, and so I'll rely on long-polling for now.
+
+```php
+<?= $this->Html->div('no-winner', sprintf('Polling every 2 seconds for users between %s and %s', $min, $max), [
+    'hx-get' => $this->Url->build(['action' => 'choose_winner']),
+    'hx-vals' => json_encode([
+        'min' => $min,
+        'max' => $max
+    ]),
+    'hx-trigger' => 'every 2s',
+]); ?>
+```
+
+Our template file spits out a div that triggers a GET request to our `choose_winner` action. We've added extra querystring arguments via `hx-vals`. While these could have been added to the `hx-get` url directly, I display this method here to show that HTMX has a method of adding query arguments built into the framework. Thats important as you can _also_ use javascript - though you don't need to! - in order to build more dynamic query arguments.
+
+The trigger in this case is every two seconds. HTMX triggers are numerous - this is the third one I've shown in this demo - and cover a wide variety of common use cases. If you have something that isn't covered, you can again fallback to javascript.
+
+Finally, we'll put together our `choose_winner` action:
+
+```php
+public function chooseWinner()
+{
+    $this->viewBuilder()->disableAutoLayout();
+    $this->set('min', $this->request->getQuery('min'));
+    $this->set('max', $this->request->getQuery('max'));
+
+    if (rand(0, 1)) {
+        $winner = rand(
+            (int)$this->request->getQuery('min'),
+            (int)$this->request->getQuery('max')
+        );
+        $this->set('winner', $winner);
+        $this->Htmx->stopPolling();
+    }
+}
+```
+
+In this case, we'll set the min/max as view variables, and also randomly pick a winner in half of the cases. HTMX long-polling can be stopped server-side by setting a specific header on the response, which we do here using the htmx plugin's `HtmxComponent::stopPolling()` method.
+
+The template file is also pretty simple. If there is a winner, we display it, and otherwise tell folks we're still polling:
+
+```php
+<?php if (!empty($winner)) : ?>
+    <h2>The winner is attendee #<?= $winner ?></h2>
+<?php else : ?>
+    <h3>No winner yet, keep waiting</h3>
+<?php endif; ?>
+```
