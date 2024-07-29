@@ -10,7 +10,7 @@
         "cakephp/migrations": "^4.0.0",
         "cakephp/plugin-installer": "^2.0",
         "fakerphp/faker": "^1.23",
-        "mobiledetect/mobiledetectlib": "^3.74",
+        "mobiledetect/mobiledetectlib": "^4.8",
         "zunnu/cake-htmx": "^1.0"
     },
     "require-dev": {
