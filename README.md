@@ -1,4 +1,8 @@
-# Infinite scroll demo
+# HTMX Demos
+
+Follow the docs below to recreate this demo in your app.
+
+## Infinite scroll demo
 
 Start with generating a database:
 
@@ -215,7 +219,7 @@ $this->viewBuilder()->setTemplate('htmx/articles/index');
 
 This method would allow us to bypass the rest of the original template, which can be helpful in cases where we have more complex templates. The nice thing about this is that we can now reuse that element in other places, or if our controller logic has a of unrelated logic, use a separate action altogether that _only_ renders the htmx code.
 
----
+## Search demo
 
 One common feature folks build into their applications is search. Typically you're searching a database, filtering results and returning relevant results to users. We'll start by updating the default index page to add search.
 
@@ -314,7 +318,7 @@ Similar to our previous version, I'll use an element to store the actual code I 
 
 We could have also used a View Block or avoided both by using the `hx-select`  attribute to only include certain elements in our swap and performing the logic entirely on the client-side. I recommend weighing the complexity of each method as you use HTMX, but generally standardizing on one in order to make it easy to work across your codebase.
 
----
+## Raffle demo
 
 A common use-case in an application is to run some long-running process and keep a user up to date on the status. Avoiding this in the browser is important, as we don't want timeouts to occur or tie the actual work to the remote user's browser not being closed. A common use-case is running said work in a queue, which we can the CakePHP Queue plugin for. Work would get processed on some message bus, and then status displayed back to users in some fashion.
 
