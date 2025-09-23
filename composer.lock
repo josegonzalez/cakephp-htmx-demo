@@ -2169,16 +2169,16 @@
         },
         {
             "name": "zunnu/cake-htmx",
-            "version": "1.0.2",
+            "version": "1.0.3",
             "source": {
                 "type": "git",
                 "url": "https://github.com/zunnu/cake-htmx.git",
-                "reference": "6e5e0fb1d939f2658edcecb9521e0ce5036853aa"
+                "reference": "534aca4e72207a00b5c817c473b2b5f077f14c1c"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/zunnu/cake-htmx/zipball/6e5e0fb1d939f2658edcecb9521e0ce5036853aa",
-                "reference": "6e5e0fb1d939f2658edcecb9521e0ce5036853aa",
+                "url": "https://api.github.com/repos/zunnu/cake-htmx/zipball/534aca4e72207a00b5c817c473b2b5f077f14c1c",
+                "reference": "534aca4e72207a00b5c817c473b2b5f077f14c1c",
                 "shasum": ""
             },
             "require": {
@@ -2186,7 +2186,11 @@
                 "php": ">=8.1"
             },
             "require-dev": {
-                "phpunit/phpunit": "^10.1"
+                "cakephp/cakephp-codesniffer": "^5.2",
+                "dealerdirect/phpcodesniffer-composer-installer": "^1.0",
+                "phpstan/phpstan": "^2.1",
+                "phpunit/phpunit": "^10.1",
+                "slevomat/coding-standard": "^8.15"
             },
             "type": "cakephp-plugin",
             "autoload": {
@@ -2201,9 +2205,9 @@
             "description": "Htmx plugin for CakePHP",
             "support": {
                 "issues": "https://github.com/zunnu/cake-htmx/issues",
-                "source": "https://github.com/zunnu/cake-htmx/tree/1.0.2"
+                "source": "https://github.com/zunnu/cake-htmx/tree/1.0.3"
             },
-            "time": "2024-07-25T19:40:18+00:00"
+            "time": "2025-09-20T22:14:29+00:00"
         }
     ],
     "packages-dev": [
