@@ -8,16 +8,16 @@
     "packages": [
         {
             "name": "cakephp/cakephp",
-            "version": "5.2.7",
+            "version": "5.2.8",
             "source": {
                 "type": "git",
                 "url": "https://github.com/cakephp/cakephp.git",
-                "reference": "6912570c76b7c27410ab7524d119e5a97f851508"
+                "reference": "b51b13ff8df7f9160a261b978eb93efe1210ad2c"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/cakephp/cakephp/zipball/6912570c76b7c27410ab7524d119e5a97f851508",
-                "reference": "6912570c76b7c27410ab7524d119e5a97f851508",
+                "url": "https://api.github.com/repos/cakephp/cakephp/zipball/b51b13ff8df7f9160a261b978eb93efe1210ad2c",
+                "reference": "b51b13ff8df7f9160a261b978eb93efe1210ad2c",
                 "shasum": ""
             },
             "require": {
@@ -65,7 +65,7 @@
                 "cakephp/validation": "self.version"
             },
             "require-dev": {
-                "cakephp/cakephp-codesniffer": "^5.2",
+                "cakephp/cakephp-codesniffer": "^5.3",
                 "http-interop/http-factory-tests": "dev-main",
                 "mikey179/vfsstream": "^1.6.10",
                 "mockery/mockery": "^1.6",
@@ -125,7 +125,7 @@
                 "issues": "https://github.com/cakephp/cakephp/issues",
                 "source": "https://github.com/cakephp/cakephp"
             },
-            "time": "2025-08-31T02:18:16+00:00"
+            "time": "2025-09-24T02:35:28+00:00"
         },
         {
             "name": "cakephp/chronos",
