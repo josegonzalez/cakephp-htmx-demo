@@ -8,16 +8,16 @@
     "packages": [
         {
             "name": "cakephp/cakephp",
-            "version": "5.2.9",
+            "version": "5.2.10",
             "source": {
                 "type": "git",
                 "url": "https://github.com/cakephp/cakephp.git",
-                "reference": "12d41e43f945c1cb38ef3d983a9d87f9b13c041f"
+                "reference": "7b871bc048c59774c07f283814bf8af9ea88ea27"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/cakephp/cakephp/zipball/12d41e43f945c1cb38ef3d983a9d87f9b13c041f",
-                "reference": "12d41e43f945c1cb38ef3d983a9d87f9b13c041f",
+                "url": "https://api.github.com/repos/cakephp/cakephp/zipball/7b871bc048c59774c07f283814bf8af9ea88ea27",
+                "reference": "7b871bc048c59774c07f283814bf8af9ea88ea27",
                 "shasum": ""
             },
             "require": {
@@ -125,7 +125,7 @@
                 "issues": "https://github.com/cakephp/cakephp/issues",
                 "source": "https://github.com/cakephp/cakephp"
             },
-            "time": "2025-10-17T03:14:02+00:00"
+            "time": "2025-12-05T22:11:11+00:00"
         },
         {
             "name": "cakephp/chronos",
@@ -2173,16 +2173,16 @@
         },
         {
             "name": "zunnu/cake-htmx",
-            "version": "1.0.3",
+            "version": "1.0.4",
             "source": {
                 "type": "git",
                 "url": "https://github.com/zunnu/cake-htmx.git",
-                "reference": "534aca4e72207a00b5c817c473b2b5f077f14c1c"
+                "reference": "f5ad540daa824b2eab4c4024bd567c017d57c99b"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/zunnu/cake-htmx/zipball/534aca4e72207a00b5c817c473b2b5f077f14c1c",
-                "reference": "534aca4e72207a00b5c817c473b2b5f077f14c1c",
+                "url": "https://api.github.com/repos/zunnu/cake-htmx/zipball/f5ad540daa824b2eab4c4024bd567c017d57c99b",
+                "reference": "f5ad540daa824b2eab4c4024bd567c017d57c99b",
                 "shasum": ""
             },
             "require": {
@@ -2209,9 +2209,9 @@
             "description": "Htmx plugin for CakePHP",
             "support": {
                 "issues": "https://github.com/zunnu/cake-htmx/issues",
-                "source": "https://github.com/zunnu/cake-htmx/tree/1.0.3"
+                "source": "https://github.com/zunnu/cake-htmx/tree/1.0.4"
             },
-            "time": "2025-09-20T22:14:29+00:00"
+            "time": "2025-12-03T14:57:53+00:00"
         }
     ],
     "packages-dev": [
